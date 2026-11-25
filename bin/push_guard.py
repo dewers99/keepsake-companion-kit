@@ -96,8 +96,13 @@ def commit_set(cwd, *spec):
 def log_event(cwd, event):
     d = state_dir(cwd)
     event = {"ts": now_iso(), **event}
-    with open(d / "push-guard.log", "a", encoding="utf-8") as fh:
-        fh.write(json.dumps(event) + "\n")
+    with open(d / "push-guard.log", "a+b") as fh:
+        fh.seek(0, 2)
+        if fh.tell() > 0:
+            fh.seek(-1, 2)
+            if fh.read(1) != b"\n":
+                fh.write(b"\n")
+        fh.write((json.dumps(event) + "\n").encode("utf-8"))
 
 
 def refuse(msg):
