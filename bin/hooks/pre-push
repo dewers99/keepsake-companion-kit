@@ -1,0 +1,9 @@
+#!/bin/sh
+# Push guard for pushes from this clone (ticket push-guard-prevention;
+# owner ruling 2026-11-23 — the guard binds every pusher on the
+# guarded clones). A push to main may carry only commits declared in
+# advance: run `python bin/push_guard.py declare`, read the
+# enumeration, then push. Emergency override: PUSH_GUARD_OVERRIDE=1
+# with PUSH_GUARD_OVERRIDE_REASON="<text>" — logged and shouted.
+ROOT=$(git rev-parse --show-toplevel)
+exec python "$ROOT/bin/push_guard.py" hook
